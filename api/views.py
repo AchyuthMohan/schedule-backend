@@ -13,8 +13,8 @@ from .serializers import TodoSerializer
 @api_view(['GET','POST'])
 def todo_list(request):
     if request.method=='GET':
-        Todos=Todo.objects.all()
-        serializer=TodoSerializer(Todos,many=True)
+        todos=Todo.objects.all()
+        serializer=TodoSerializer(todos,many=True)
         return Response(serializer.data)
 
     elif request.method=="POST":
@@ -28,22 +28,22 @@ def todo_list(request):
 @api_view(['GET','PUT','DELETE'])
 def todo_detail(request,pk):
     try:
-        Todo=Todo.objects.get(pk=pk)
+        todo=Todo.objects.get(pk=pk)
 
     except Todo.DoesNotExist:
         return HttpResponse(status=status.HTTP_404_NOT_FOUND)
 
     if request.method=="GET":
-        serializer=TodoSerializer(Todo)
+        serializer=TodoSerializer(todo)
         return Response(serializer.data)
 
     elif request.method=="PUT":
-        serializer=TodoSerializer(Todo, data=request.data)
+        serializer=TodoSerializer(todo, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method=="DELETE":
-        Todo.delete()
+        todo.delete()
         return HttpResponse(status=status.HTTP_204_NO_CONTENT)
